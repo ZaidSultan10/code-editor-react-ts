@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as esBuild from 'esbuild-wasm'
 import './App.css';
+import { unpkgPathPlugin } from './plugins/unpkg';
 
 function App() {
   const [input, setInput] = useState<string>('')
@@ -23,11 +24,14 @@ function App() {
     if(!ref.current){
       return
     }
-    const result = await ref?.current.transform(input, {
-      loader: 'jsx',
-      target: 'es2015'
+    const result = await ref.current.build({
+      entryPoints: ['index.js'],
+      bundle:true,
+      write:false,
+      plugins:[unpkgPathPlugin()]
     })
-    setCode(result.code)
+    console.log(result)
+    setCode(result)
   }
 
   return (
@@ -41,7 +45,7 @@ function App() {
         </button>
       </div>
       <div>
-        <pre>{code}</pre>
+        {/* <pre>{code}</pre> */}
       </div>
     </div>
   );
